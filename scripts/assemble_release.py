@@ -17,8 +17,8 @@ name contains the forge platform token (e.g. ".../forge-...-linux-x64-musl/...")
 
 import argparse
 import os
-import shutil
 import sys
+import tarfile
 import zipfile
 from typing import Dict, Optional, Tuple
 
@@ -27,6 +27,9 @@ from typing import Dict, Optional, Tuple
 # regardless of libc (one libc per machine); the manifest tuple picks the right
 # zip.
 TARGETS: Dict[str, Tuple[str, str]] = {
+    # MinGW build is the preferred win_x64 (full feature set); matched before
+    # the bare "windows-x64" token via longest-first ordering below.
+    "windows-x64-gnu": ("win_x64", "win32"),
     "windows-x64": ("win_x64", "win32"),
     "windows-arm64": ("win_arm64", "win32"),
     "macos-x64": ("darwin_x64", "darwin"),
@@ -39,6 +42,19 @@ TARGETS: Dict[str, Tuple[str, str]] = {
 
 # Longest tokens first so "linux-x64-musl" matches before "linux-x64".
 _ORDERED_TOKENS = sorted(TARGETS, key=len, reverse=True)
+
+
+def extract_tarballs(root: str) -> None:
+    """Extract any *.tar.gz found under root in place.
+
+    forge uploads each target's conan package as a single tar.gz inside the
+    workflow artifact (layout: package/bin/ffmpeg[.exe]).
+    """
+    for dirpath, _dirs, files in os.walk(root):
+        for fname in files:
+            if fname.endswith(".tar.gz") or fname.endswith(".tgz"):
+                with tarfile.open(os.path.join(dirpath, fname)) as tf:
+                    tf.extractall(os.path.join(dirpath, "_extracted"))
 
 
 def find_exe(root: str, stem: str) -> Optional[str]:
@@ -70,6 +86,7 @@ def assemble(artifacts_dir: str, out_dir: str) -> int:
             continue
         zipkey, bindir = TARGETS[token]
         is_windows = bindir == "win32"
+        extract_tarballs(src)
         ffmpeg = find_exe(src, "ffmpeg")
         ffprobe = find_exe(src, "ffprobe")
         if not ffmpeg or not ffprobe:

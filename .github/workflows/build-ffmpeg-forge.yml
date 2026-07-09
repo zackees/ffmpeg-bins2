@@ -33,6 +33,7 @@ on:
       # Per-platform toggles so a single target can be re-built in isolation
       # (e.g. iterating on Windows without rebuilding the working platforms).
       windows_x64:      { type: boolean, default: true }
+      windows_x64_gnu:  { type: boolean, default: false }
       windows_arm64:    { type: boolean, default: true }
       macos_x64:        { type: boolean, default: true }
       macos_arm64:      { type: boolean, default: true }
@@ -51,6 +52,7 @@ jobs:
       name: ffmpeg-full
       version: ${{ inputs.version }}
       windows_x64: ${{ inputs.windows_x64 }}
+      windows_x64_gnu: ${{ inputs.windows_x64_gnu }}
       windows_arm64: ${{ inputs.windows_arm64 }}
       macos_x64: ${{ inputs.macos_x64 }}
       macos_arm64: ${{ inputs.macos_arm64 }}

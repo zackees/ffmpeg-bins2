@@ -45,12 +45,12 @@ class FfmpegFullConan(ConanFile):
                 "with_libalsa": False,
                 "with_pulse": False,
             })
-        elif self.settings.os == "Windows":
-            # meson-built AV1 libs (aom, dav1d) fail ffmpeg's configure on MSVC:
-            # ".pc not found using pkg-config" -- their pkg-config files aren't
-            # located in the MSVC build env. Disable both; AV1 *encode* stays
-            # available via SVT-AV1 (cmake, unaffected) and AV1 *decode* via
-            # ffmpeg's native decoder.
+        elif self.settings.os == "Windows" and self.settings.get_safe("compiler") == "msvc":
+            # The MSVC build env fails to resolve several deps via pkg-config
+            # (aom, dav1d, and intermittently freetype2). The MinGW/GCC build
+            # (windows-x64-gnu) uses msys2 pkg-config normally and gets the full
+            # feature set, so this trim is MSVC-only. AV1 encode stays via
+            # SVT-AV1; decode via ffmpeg's native decoder.
             opts["with_libaom"] = False
             opts["with_libdav1d"] = False
         self.requires(f"ffmpeg/{FFMPEG_VERSION}", options=opts)
