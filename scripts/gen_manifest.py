@@ -27,8 +27,8 @@ PLATFORM_TUPLES: Dict[str, Dict[str, str]] = {
     "win_arm64": {"os": "windows", "arch": "arm64"},
     "darwin_x64": {"os": "macos", "arch": "x86_64"},
     "darwin_arm64": {"os": "macos", "arch": "arm64"},
-    "linux_x64_glibc217": {"os": "linux", "arch": "x86_64", "libc": "glibc"},
-    "linux_arm64_glibc217": {"os": "linux", "arch": "arm64", "libc": "glibc"},
+    "linux_x64": {"os": "linux", "arch": "x86_64", "libc": "glibc"},
+    "linux_arm64": {"os": "linux", "arch": "arm64", "libc": "glibc"},
     "linux_x64_musl": {"os": "linux", "arch": "x86_64", "libc": "musl"},
     "linux_arm64_musl": {"os": "linux", "arch": "arm64", "libc": "musl"},
 }

@@ -30,10 +30,13 @@ extracts into `bin/<platform-key>/`.
 | `win_arm64`         | windows | arm64  | – |
 | `darwin_x64`        | macos   | x86_64 | – |
 | `darwin_arm64`      | macos   | arm64  | – |
-| `linux_x64_glibc217`   | linux | x86_64 | glibc 2.17 |
-| `linux_arm64_glibc217` | linux | arm64  | glibc 2.17 |
+| `linux_x64`         | linux   | x86_64 | glibc (runner default) |
+| `linux_arm64`       | linux   | arm64  | glibc (runner default) |
 | `linux_x64_musl`    | linux   | x86_64 | musl |
 | `linux_arm64_musl`  | linux   | arm64  | musl |
+
+Linux glibc builds use whatever glibc the forge runner ships; users on older
+glibc can use the **musl** builds, which are statically self-contained.
 
 ## Distribution
 
