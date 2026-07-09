@@ -2,96 +2,77 @@
   "kind": "Catalog",
   "schema_version": 1,
   "tool": "ffmpeg",
-  "_comment": "Example ffmpeg catalog in the zackees/manifest.json Catalog format. This documents the exact contract static_ffmpeg/manifest.py resolves against. urls[] point at a CDN-fronted www site (no bandwidth limits); sha256 is verified by the client after download. Replace <cdn>, versions, sizes and hashes with real published values in ffmpeg-bins2.",
   "channels": {
-    "latest-stable": "8.0.0"
+    "latest-stable": "8.1.2"
   },
   "releases": [
     {
-      "version": "8.0.0",
-      "published_at": "2026-01-01T00:00:00Z",
+      "version": "8.1.2",
       "platforms": [
         {
-          "platform": { "os": "windows", "arch": "x86_64" },
-          "asset": {
-            "filename": "win_x64.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-            "size_bytes": 0,
-            "media_type": "application/zip",
-            "urls": ["https://<cdn>/ffmpeg/8.0.0/win_x64.zip"]
-          }
-        },
-        {
-          "platform": { "os": "windows", "arch": "arm64" },
-          "asset": {
-            "filename": "win_arm64.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-            "size_bytes": 0,
-            "media_type": "application/zip",
-            "urls": ["https://<cdn>/ffmpeg/8.0.0/win_arm64.zip"]
-          }
-        },
-        {
-          "platform": { "os": "macos", "arch": "x86_64" },
+          "platform": {
+            "os": "macos",
+            "arch": "x86_64"
+          },
           "asset": {
             "filename": "darwin_x64.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-            "size_bytes": 0,
+            "sha256": "60839c7196d19512e6b1fc9f9f46897a39438e408f4c95c28ebe178d080c038e",
+            "size_bytes": 51492350,
             "media_type": "application/zip",
-            "urls": ["https://<cdn>/ffmpeg/8.0.0/darwin_x64.zip"]
+            "urls": [
+              "https://github.com/zackees/ffmpeg-bins2/releases/download/v8.1.2/darwin_x64.zip"
+            ]
           }
         },
         {
-          "platform": { "os": "macos", "arch": "arm64" },
+          "platform": {
+            "os": "macos",
+            "arch": "arm64"
+          },
           "asset": {
             "filename": "darwin_arm64.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-            "size_bytes": 0,
+            "sha256": "842ba18551e73f1f7f0e92408b210503fc9a13b88182db2014fd553bce990895",
+            "size_bytes": 45821603,
             "media_type": "application/zip",
-            "urls": ["https://<cdn>/ffmpeg/8.0.0/darwin_arm64.zip"]
+            "urls": [
+              "https://github.com/zackees/ffmpeg-bins2/releases/download/v8.1.2/darwin_arm64.zip"
+            ]
           }
         },
         {
-          "platform": { "os": "linux", "arch": "x86_64", "libc": "glibc" },
+          "platform": {
+            "os": "linux",
+            "arch": "x86_64",
+            "libc": "glibc"
+          },
           "asset": {
             "filename": "linux_x64.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-            "size_bytes": 0,
+            "sha256": "150f20cfa659754115b74c2aa32f0e1aa150d08a14191156875c8efeb5713b29",
+            "size_bytes": 56209363,
             "media_type": "application/zip",
-            "urls": ["https://<cdn>/ffmpeg/8.0.0/linux_x64.zip"]
+            "urls": [
+              "https://github.com/zackees/ffmpeg-bins2/releases/download/v8.1.2/linux_x64.zip"
+            ]
           }
         },
         {
-          "platform": { "os": "linux", "arch": "arm64", "libc": "glibc" },
+          "platform": {
+            "os": "linux",
+            "arch": "arm64",
+            "libc": "glibc"
+          },
           "asset": {
             "filename": "linux_arm64.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-            "size_bytes": 0,
+            "sha256": "a7c8ea67d87f97dcbfcb76bd48b0dadf92ccdad2acb77422e4597ba5e97c9093",
+            "size_bytes": 53381729,
             "media_type": "application/zip",
-            "urls": ["https://<cdn>/ffmpeg/8.0.0/linux_arm64.zip"]
-          }
-        },
-        {
-          "platform": { "os": "linux", "arch": "x86_64", "libc": "musl" },
-          "asset": {
-            "filename": "linux_x64_musl.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-            "size_bytes": 0,
-            "media_type": "application/zip",
-            "urls": ["https://<cdn>/ffmpeg/8.0.0/linux_x64_musl.zip"]
-          }
-        },
-        {
-          "platform": { "os": "linux", "arch": "arm64", "libc": "musl" },
-          "asset": {
-            "filename": "linux_arm64_musl.zip",
-            "sha256": "0000000000000000000000000000000000000000000000000000000000000000",
-            "size_bytes": 0,
-            "media_type": "application/zip",
-            "urls": ["https://<cdn>/ffmpeg/8.0.0/linux_arm64_musl.zip"]
+            "urls": [
+              "https://github.com/zackees/ffmpeg-bins2/releases/download/v8.1.2/linux_arm64.zip"
+            ]
           }
         }
-      ]
+      ],
+      "published_at": "2026-07-09T00:00:00Z"
     }
   ]
 }
