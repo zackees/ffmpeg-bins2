@@ -65,7 +65,20 @@ installs pull the newest channel entry.
 
 ## Status
 
-⚠️ **Scaffold.** The committed `manifest.json` is a placeholder (zero hashes /
-`<cdn>` URLs) until the first forge build publishes real artifacts. Do not point
-production clients at it yet. Tracked in
+**Live.** `manifest.json` publishes real FFmpeg **8.1.2** (`--enable-gpl
+--enable-nonfree`, full codec set) and `static-ffmpeg` resolves it by default.
+
+| target | 8.1.2 |
+|---|---|
+| macOS x64 / arm64 | ✅ |
+| glibc-Linux x64 / arm64 | ✅ |
+| Windows x64 / arm64 | ⏳ blocked on [forge#10](https://github.com/zackees/forge/issues/10) (MSVC pkg-config) |
+| musl x64 / arm64 | ⏳ blocked on [forge#10](https://github.com/zackees/forge/issues/10) (musl C++ toolchain) |
+
+Windows/musl clients fall back to the legacy
+[`ffmpeg_bins`](https://github.com/zackees/ffmpeg_bins) binaries until their
+forge builds land. Delivery is via the [Release
+assets](https://github.com/zackees/ffmpeg-bins2/releases) (Fastly CDN, no
+bandwidth limit); the `8.1.2/` LFS copies are the archival source of truth.
+Tracked in
 [static-ffmpeg#20](https://github.com/zackees/static_ffmpeg/issues/20).
