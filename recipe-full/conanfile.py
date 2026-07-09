@@ -45,14 +45,20 @@ class FfmpegFullConan(ConanFile):
                 "with_libalsa": False,
                 "with_pulse": False,
             })
-        elif self.settings.os == "Windows" and self.settings.get_safe("compiler") == "msvc":
-            # The MSVC build env fails to resolve several deps via pkg-config
-            # (aom, dav1d, and intermittently freetype2). The MinGW/GCC build
-            # (windows-x64-gnu) uses msys2 pkg-config normally and gets the full
-            # feature set, so this trim is MSVC-only. AV1 encode stays via
-            # SVT-AV1; decode via ffmpeg's native decoder.
-            opts["with_libaom"] = False
-            opts["with_libdav1d"] = False
+        elif self.settings.os == "Windows":
+            if self.settings.get_safe("compiler") == "msvc":
+                # The MSVC build env fails to resolve several deps via
+                # pkg-config (aom, dav1d, and deterministically freetype2 once
+                # those are off). AV1 encode stays via SVT-AV1; decode via
+                # ffmpeg's native decoder.
+                opts["with_libaom"] = False
+                opts["with_libdav1d"] = False
+            else:
+                # MinGW/GCC (windows-x64-gnu): conan-center libiconv 1.17 fails
+                # to compile with the bundled MinGW GCC 15 (gnulib stat-time.h
+                # vs _stati64). Disable iconv; ffmpeg still builds (loses
+                # -sub_charenc charset conversion).
+                opts["with_libiconv"] = False
         self.requires(f"ffmpeg/{FFMPEG_VERSION}", options=opts)
 
     def package(self):
