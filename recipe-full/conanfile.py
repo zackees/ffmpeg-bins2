@@ -46,10 +46,13 @@ class FfmpegFullConan(ConanFile):
                 "with_pulse": False,
             })
         elif self.settings.os == "Windows":
-            # conan-center libaom fails ffmpeg's configure on MSVC:
-            # "aom >= 2.0.0 not found using pkg-config". AV1 encode still
-            # available via SVT-AV1 (x64); decode via dav1d.
+            # meson-built AV1 libs (aom, dav1d) fail ffmpeg's configure on MSVC:
+            # ".pc not found using pkg-config" -- their pkg-config files aren't
+            # located in the MSVC build env. Disable both; AV1 *encode* stays
+            # available via SVT-AV1 (cmake, unaffected) and AV1 *decode* via
+            # ffmpeg's native decoder.
             opts["with_libaom"] = False
+            opts["with_libdav1d"] = False
         self.requires(f"ffmpeg/{FFMPEG_VERSION}", options=opts)
 
     def package(self):

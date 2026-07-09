@@ -30,6 +30,16 @@ on:
         description: Path to the recipe within recipe_repo
         required: true
         default: recipe-full
+      # Per-platform toggles so a single target can be re-built in isolation
+      # (e.g. iterating on Windows without rebuilding the working platforms).
+      windows_x64:      { type: boolean, default: true }
+      windows_arm64:    { type: boolean, default: true }
+      macos_x64:        { type: boolean, default: true }
+      macos_arm64:      { type: boolean, default: true }
+      linux_x64:        { type: boolean, default: true }
+      linux_arm64:      { type: boolean, default: true }
+      linux_x64_musl:   { type: boolean, default: true }
+      linux_arm64_musl: { type: boolean, default: true }
 
 jobs:
   build:
@@ -40,11 +50,11 @@ jobs:
       recipe_path: ${{ inputs.recipe_path }}
       name: ffmpeg-full
       version: ${{ inputs.version }}
-      windows_x64: true
-      windows_arm64: true
-      macos_x64: true
-      macos_arm64: true
-      linux_x64: true
-      linux_arm64: true
-      linux_x64_musl: true
-      linux_arm64_musl: true
+      windows_x64: ${{ inputs.windows_x64 }}
+      windows_arm64: ${{ inputs.windows_arm64 }}
+      macos_x64: ${{ inputs.macos_x64 }}
+      macos_arm64: ${{ inputs.macos_arm64 }}
+      linux_x64: ${{ inputs.linux_x64 }}
+      linux_arm64: ${{ inputs.linux_arm64 }}
+      linux_x64_musl: ${{ inputs.linux_x64_musl }}
+      linux_arm64_musl: ${{ inputs.linux_arm64_musl }}
