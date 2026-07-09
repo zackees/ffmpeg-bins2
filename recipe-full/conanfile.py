@@ -26,25 +26,29 @@ class FfmpegFullConan(ConanFile):
     package_type = "application"
 
     def requirements(self):
-        opts = {
-            "with_programs": True,
-            # Linux options that pull */system recipes needing apt-installed dev
-            # packages (libva-dev, libvdpau-dev, xcb/X11, alsa, pulse). conan's
-            # package_manager mode is 'check' on CI, so these fail unattended --
-            # and musl/Alpine can't apt at all. Disable everywhere (inert on
-            # non-Linux, where these options don't exist).
-            "with_vaapi": False,
-            "with_vdpau": False,
-            "with_xcb": False,
-            "with_xlib": False,
-            "with_libalsa": False,
-            "with_pulse": False,
-            "with_libdrm": False,
-        }
-        if self.settings.os == "Windows":
+        # NOTE: self.requires(options=...) validates option names strictly, and
+        # the ffmpeg recipe *deletes* platform-inapplicable options in its
+        # config_options() (e.g. with_vaapi only exists on Linux/FreeBSD). So we
+        # must only pass options that exist for the current OS -- passing a
+        # deleted option is a hard error ("option 'with_vaapi' doesn't exist").
+        opts = {}
+        if self.settings.os in ("Linux", "FreeBSD"):
+            # These pull */system recipes needing apt-installed dev packages
+            # (libva-dev, libvdpau-dev, xcb/X11, alsa, pulse). conan's
+            # package_manager mode is 'check' on CI so they fail unattended, and
+            # musl/Alpine can't apt at all. Disable for portable builds.
+            opts.update({
+                "with_vaapi": False,
+                "with_vdpau": False,
+                "with_xcb": False,
+                "with_xlib": False,
+                "with_libalsa": False,
+                "with_pulse": False,
+            })
+        elif self.settings.os == "Windows":
             # conan-center libaom fails ffmpeg's configure on MSVC:
             # "aom >= 2.0.0 not found using pkg-config". AV1 encode still
-            # available via SVT-AV1; decode via dav1d.
+            # available via SVT-AV1 (x64); decode via dav1d.
             opts["with_libaom"] = False
         self.requires(f"ffmpeg/{FFMPEG_VERSION}", options=opts)
 
