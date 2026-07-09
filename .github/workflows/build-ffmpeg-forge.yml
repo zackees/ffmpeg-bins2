@@ -1,0 +1,101 @@
+# DRAFT / scaffold — manual dispatch only. This wires up the 8-target build
+# matrix through zackees/forge, but the ffmpeg Conan recipe + full-feature
+# option set (GPL + nonfree + external codec libs) and the glibc-2.17
+# (manylinux2014) baseline are NOT yet verified. Do not treat a green run here
+# as "binaries ready" until the produced artifacts are tested end-to-end.
+# Tracked in https://github.com/zackees/static_ffmpeg/issues/20
+name: build-ffmpeg-forge (draft)
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: FFmpeg version to build (e.g. 8.0.0)
+        required: true
+      recipe_repo:
+        description: Repo containing the ffmpeg Conan recipe
+        required: true
+        default: conan-io/conan-center-index
+      recipe_path:
+        description: Path to the recipe within recipe_repo
+        required: true
+        default: recipes/ffmpeg/all
+
+jobs:
+  # One forge job per target. forge's reusable workflow builds on the matching
+  # native runner and uploads the package as a workflow artifact; a follow-up
+  # (manual or a later job) drops them under <version>/ and runs gen_manifest.py.
+  win_x64:
+    uses: zackees/forge/.github/workflows/forge-conan.yml@main
+    with:
+      recipe_repo: ${{ inputs.recipe_repo }}
+      recipe_path: ${{ inputs.recipe_path }}
+      name: ffmpeg
+      version: ${{ inputs.version }}
+      windows_x64: true
+
+  win_arm64:
+    uses: zackees/forge/.github/workflows/forge-conan.yml@main
+    with:
+      recipe_repo: ${{ inputs.recipe_repo }}
+      recipe_path: ${{ inputs.recipe_path }}
+      name: ffmpeg
+      version: ${{ inputs.version }}
+      windows_arm64: true
+
+  darwin_x64:
+    uses: zackees/forge/.github/workflows/forge-conan.yml@main
+    with:
+      recipe_repo: ${{ inputs.recipe_repo }}
+      recipe_path: ${{ inputs.recipe_path }}
+      name: ffmpeg
+      version: ${{ inputs.version }}
+      macos_x64: true
+
+  darwin_arm64:
+    uses: zackees/forge/.github/workflows/forge-conan.yml@main
+    with:
+      recipe_repo: ${{ inputs.recipe_repo }}
+      recipe_path: ${{ inputs.recipe_path }}
+      name: ffmpeg
+      version: ${{ inputs.version }}
+      macos_arm64: true
+
+  # glibc-2.17 baseline: needs a manylinux2014 container/sysroot so the binary
+  # carries a 2.17 floor. Native forge Linux runners ship newer glibc — this
+  # toggle alone does NOT guarantee 2.17 and is the main open item.
+  linux_x64_glibc217:
+    uses: zackees/forge/.github/workflows/forge-conan.yml@main
+    with:
+      recipe_repo: ${{ inputs.recipe_repo }}
+      recipe_path: ${{ inputs.recipe_path }}
+      name: ffmpeg
+      version: ${{ inputs.version }}
+      linux_x64: true
+
+  linux_arm64_glibc217:
+    uses: zackees/forge/.github/workflows/forge-conan.yml@main
+    with:
+      recipe_repo: ${{ inputs.recipe_repo }}
+      recipe_path: ${{ inputs.recipe_path }}
+      name: ffmpeg
+      version: ${{ inputs.version }}
+      linux_arm64: true
+
+  linux_x64_musl:
+    uses: zackees/forge/.github/workflows/forge-conan.yml@main
+    with:
+      recipe_repo: ${{ inputs.recipe_repo }}
+      recipe_path: ${{ inputs.recipe_path }}
+      name: ffmpeg
+      version: ${{ inputs.version }}
+      linux_x64_musl: true
+
+  linux_arm64_musl:
+    uses: zackees/forge/.github/workflows/forge-conan.yml@main
+    with:
+      recipe_repo: ${{ inputs.recipe_repo }}
+      recipe_path: ${{ inputs.recipe_path }}
+      name: ffmpeg
+      version: ${{ inputs.version }}
+      linux_arm64_musl: true

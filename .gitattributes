@@ -1,0 +1,7 @@
+# Binary artifacts are stored via Git LFS. They are served to clients over a
+# CDN-fronted www site (see README) so downloads have no bandwidth limits; the
+# in-repo LFS copy is the source of truth.
+*.zip   filter=lfs diff=lfs merge=lfs -text
+*.tar.gz  filter=lfs diff=lfs merge=lfs -text
+*.tar.zst filter=lfs diff=lfs merge=lfs -text
+*.7z    filter=lfs diff=lfs merge=lfs -text
