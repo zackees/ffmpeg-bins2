@@ -4,10 +4,10 @@
 # forge-ffmpeg-<version>-<platform>.tar.gz artifact per target. A follow-up
 # step (gen_manifest.py) turns those into the published catalog.
 #
-# NOTE: forge builds the recipe with its *default* options. conan-center's
-# ffmpeg enables the common GPL codecs (x264/x265/...) by default but not the
-# nonfree ones (e.g. fdk_aac). To ship a full nonfree build, point recipe_repo/
-# recipe_path at a custom recipe whose default_options enable everything. See
+# Builds recipe-full/conanfile.py: a wrapper that builds conan-center ffmpeg
+# with a maximal GPL + nonfree option set, tuned per-platform so it builds on
+# stock CI runners (Linux system-dep options off; libaom off on Windows/MSVC).
+# See recipe-full/conanfile.py and docs/ffmpeg-options.md.
 # https://github.com/zackees/static_ffmpeg/issues/20
 name: build-ffmpeg-forge
 
@@ -15,21 +15,21 @@ on:
   workflow_dispatch:
     inputs:
       version:
-        description: FFmpeg version (must exist in the recipe)
+        description: ffmpeg-full package version (tracks the ffmpeg version)
         required: true
         default: "8.1.2"
       recipe_repo:
-        description: Repo containing the ffmpeg Conan recipe
+        description: Repo containing the Conan recipe
         required: true
-        default: conan-io/conan-center-index
+        default: zackees/ffmpeg-bins2
       recipe_ref:
         description: Recipe repo ref
         required: true
-        default: master
+        default: main
       recipe_path:
         description: Path to the recipe within recipe_repo
         required: true
-        default: recipes/ffmpeg/all
+        default: recipe-full
 
 jobs:
   build:
@@ -38,7 +38,7 @@ jobs:
       recipe_repo: ${{ inputs.recipe_repo }}
       recipe_ref: ${{ inputs.recipe_ref }}
       recipe_path: ${{ inputs.recipe_path }}
-      name: ffmpeg
+      name: ffmpeg-full
       version: ${{ inputs.version }}
       windows_x64: true
       windows_arm64: true
