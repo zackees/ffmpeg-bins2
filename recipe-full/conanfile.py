@@ -46,22 +46,18 @@ class FfmpegFullConan(ConanFile):
                 "with_pulse": False,
             })
         elif self.settings.os == "Windows":
-            if self.settings.get_safe("compiler") == "msvc":
-                # The MSVC build env fails to resolve several deps via
-                # pkg-config (aom, dav1d, and deterministically freetype2 once
-                # those are off). AV1 encode stays via SVT-AV1; decode via
-                # ffmpeg's native decoder.
-                opts["with_libaom"] = False
-                opts["with_libdav1d"] = False
-            else:
-                # MinGW/GCC (windows-x64-gnu) with the bundled GCC 15 hits a
-                # few upstream deps that don't compile cleanly on this new
-                # toolchain; trim them so the (still very full) codec build
-                # completes. The real fix is an older MinGW GCC in the
-                # soldr-toolchain bundle -- see zackees/forge#10.
+            # aom and dav1d are meson-built; ffmpeg's configure can't resolve
+            # their .pc files via pkg-config on Windows (both MSVC and MinGW).
+            # AV1 *encode* stays via SVT-AV1; *decode* via ffmpeg's native
+            # decoder. (Root cause tracked in zackees/forge#10.)
+            opts["with_libaom"] = False
+            opts["with_libdav1d"] = False
+            if self.settings.get_safe("compiler") != "msvc":
+                # MinGW/GCC 15 additionally can't build two upstream deps; the
+                # clean fix is an older MinGW GCC in the soldr bundle (forge#10):
                 #   - libiconv 1.17: gnulib stat-time.h vs _stati64 (GCC 15)
-                #   - openssl 3.6.3: DTLS bss_dgram.c assumes Linux in_pktinfo
-                #     (ipi_spec_dst) -> loses TLS/https protocols
+                #   - openssl 3.6.3: DTLS assumes Linux in_pktinfo.ipi_spec_dst
+                #     -> loses TLS/https protocols
                 opts["with_libiconv"] = False
                 opts["with_ssl"] = False
         self.requires(f"ffmpeg/{FFMPEG_VERSION}", options=opts)
