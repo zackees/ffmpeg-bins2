@@ -54,11 +54,16 @@ class FfmpegFullConan(ConanFile):
                 opts["with_libaom"] = False
                 opts["with_libdav1d"] = False
             else:
-                # MinGW/GCC (windows-x64-gnu): conan-center libiconv 1.17 fails
-                # to compile with the bundled MinGW GCC 15 (gnulib stat-time.h
-                # vs _stati64). Disable iconv; ffmpeg still builds (loses
-                # -sub_charenc charset conversion).
+                # MinGW/GCC (windows-x64-gnu) with the bundled GCC 15 hits a
+                # few upstream deps that don't compile cleanly on this new
+                # toolchain; trim them so the (still very full) codec build
+                # completes. The real fix is an older MinGW GCC in the
+                # soldr-toolchain bundle -- see zackees/forge#10.
+                #   - libiconv 1.17: gnulib stat-time.h vs _stati64 (GCC 15)
+                #   - openssl 3.6.3: DTLS bss_dgram.c assumes Linux in_pktinfo
+                #     (ipi_spec_dst) -> loses TLS/https protocols
                 opts["with_libiconv"] = False
+                opts["with_ssl"] = False
         self.requires(f"ffmpeg/{FFMPEG_VERSION}", options=opts)
 
     def package(self):
