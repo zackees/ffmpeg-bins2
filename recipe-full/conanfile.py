@@ -52,6 +52,11 @@ class FfmpegFullConan(ConanFile):
             # decoder. (Root cause tracked in zackees/forge#10.)
             opts["with_libaom"] = False
             opts["with_libdav1d"] = False
+            # ffmpeg's Windows configure also can't resolve fdk-aac via
+            # pkg-config (same tail). Dropping it makes the Windows build a
+            # clean GPL build (no nonfree); AAC still available via ffmpeg's
+            # native encoder.
+            opts["with_libfdk_aac"] = False
             if self.settings.get_safe("compiler") != "msvc":
                 # MinGW/GCC 15 additionally can't build two upstream deps; the
                 # clean fix is an older MinGW GCC in the soldr bundle (forge#10):
